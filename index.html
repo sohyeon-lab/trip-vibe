@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f7f5ef">
+<meta name="description" content="친구들과 여행 가기 전에 알아보는 나의 여행 바이브">
+<title>Trip Vibe — 우리는 어떤 여행자일까?</title>
+<style>
+:root{
+  --bg:#f7f5ef;--paper:#fffdf8;--ink:#20201e;--muted:#77746d;
+  --line:#e6e1d6;--accent:#4f8f72;--accent2:#8fc8d8;--soft:#e8f2ed;
+  --shadow:0 18px 50px rgba(45,40,30,.09);--radius:24px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI","Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+body{display:flex;justify-content:center}
+button{font:inherit}
+.app{width:min(100%,720px);min-height:100vh;padding:22px 18px 40px}
+.header{display:flex;justify-content:space-between;align-items:center;padding:4px 2px 24px}
+.logo{font-weight:900;letter-spacing:-.04em;font-size:20px}
+.logo span{color:var(--accent)}
+.tag{font-size:12px;color:var(--muted);font-weight:700}
+.screen{display:none}
+.screen.active{display:block}
+.card{background:var(--paper);border:1px solid rgba(40,35,25,.06);box-shadow:var(--shadow);border-radius:var(--radius)}
+.start{padding:46px 30px 34px;text-align:center;overflow:hidden;position:relative}
+.start:before{content:"";position:absolute;width:240px;height:240px;border-radius:50%;background:#dceee6;right:-90px;top:-90px}
+.start:after{content:"";position:absolute;width:170px;height:170px;border-radius:50%;background:#d9edf2;left:-90px;bottom:-100px}
+.eyebrow{position:relative;z-index:1;font-size:13px;font-weight:800;color:var(--accent);letter-spacing:.08em;margin-bottom:16px}
+h1{position:relative;z-index:1;margin:0;font-size:clamp(34px,8vw,58px);line-height:1.05;letter-spacing:-.07em}
+.start p{position:relative;z-index:1;margin:20px auto 28px;color:#66635c;line-height:1.7;font-size:15px}
+.pills{position:relative;z-index:1;display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:30px}
+.pill{border:1px solid var(--line);background:#f7fbf9;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:700;color:#666}
+.primary{border:0;background:var(--ink);color:white;padding:15px 24px;border-radius:999px;font-weight:800;cursor:pointer;transition:.18s;box-shadow:0 8px 20px rgba(20,20,15,.14)}
+.primary:hover{transform:translateY(-1px);opacity:.93}
+.small-note{font-size:11px;color:#99958b;margin-top:15px}
+.progress-wrap{margin:4px 2px 22px}
+.progress-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:9px}
+.progress{height:7px;background:#e9e5dc;border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--accent);border-radius:99px;transition:.25s}
+.question-card{padding:28px 22px 22px}
+.q-kicker{font-size:12px;color:var(--accent);font-weight:900;letter-spacing:.05em}
+.question{font-size:clamp(25px,6vw,38px);line-height:1.25;letter-spacing:-.055em;margin:10px 0 26px}
+.answers{display:grid;gap:10px}
+.answer{width:100%;border:1px solid var(--line);background:#fffdfa;color:var(--ink);text-align:left;border-radius:18px;padding:17px 17px;cursor:pointer;transition:.16s;display:flex;gap:13px;align-items:flex-start}
+.answer:hover{border-color:#cfc7b8;transform:translateY(-1px);box-shadow:0 7px 18px rgba(40,35,25,.06)}
+.answer .num{flex:0 0 28px;height:28px;border-radius:50%;background:#f1eee7;display:grid;place-items:center;font-size:12px;font-weight:900;color:#777}
+.answer strong{display:block;font-size:15px;line-height:1.45}
+.answer small{display:block;color:#8a867d;font-size:12px;margin-top:4px;line-height:1.45}
+.result-hero{padding:38px 26px 28px;text-align:center;overflow:hidden;position:relative}
+.result-hero .emoji{font-size:62px;line-height:1;margin-bottom:14px}
+.result-hero h2{font-size:clamp(31px,7vw,48px);letter-spacing:-.07em;margin:0 0 12px}
+.result-hero p{margin:0 auto;color:#6f6b63;line-height:1.65;max-width:520px}
+.result-body{padding:22px}
+.section-title{font-size:13px;font-weight:900;color:#777269;letter-spacing:.04em;margin:3px 0 13px}
+.scores{display:grid;gap:22px}
+.vibe-row{padding:2px 0}
+.vibe-labels{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:8px;margin-bottom:8px;font-size:11px;font-weight:800;color:#8a887f}
+.vibe-labels span:first-child{text-align:left}
+.vibe-labels span:last-child{text-align:right}
+.vibe-name{font-size:10px;color:#aaa59b;letter-spacing:.04em;text-transform:uppercase}
+.bipolar{height:13px;border-radius:99px;background:linear-gradient(90deg,#d9edf2 0%,#eef3ee 45%,#eef3ee 55%,#dceee6 100%);position:relative}
+.bipolar:after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(80,100,90,.08)}
+.center-line{position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:#c9c9c1;z-index:1}
+.bipolar i{position:absolute;top:50%;width:18px;height:18px;border-radius:50%;background:var(--accent);border:3px solid var(--paper);box-shadow:0 3px 9px rgba(50,90,70,.22);transform:translate(-50%,-50%);z-index:2}
+.vibe-reading{display:flex;justify-content:space-between;align-items:center;margin-top:7px}
+.vibe-reading b{font-size:12px;color:var(--accent)}
+.vibe-reading span{font-size:10px;color:#aaa59b}
+.tip{margin-top:22px;background:#eaf3ef;border-radius:18px;padding:18px}
+.tip strong{font-size:14px}
+.tip p{margin:7px 0 0;font-size:13px;line-height:1.65;color:#6f685f}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.secondary{border:1px solid var(--line);background:white;color:var(--ink);padding:14px;border-radius:999px;font-weight:800;cursor:pointer}
+.share{background:var(--accent);color:white;border:0}
+.copied{font-size:12px;text-align:center;color:var(--accent);font-weight:800;height:16px;margin-top:9px}
+.footer{text-align:center;color:#aaa59a;font-size:11px;padding:22px 0 0}
+@media(max-width:500px){
+ .app{padding:14px 12px 30px}.header{padding-bottom:15px}
+ .start{padding:40px 20px 28px}.question-card{padding:24px 15px 17px}
+ .question{margin-bottom:22px}.answer{padding:15px}.vibe-labels{font-size:10px}.vibe-name{font-size:9px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="logo">trip<span>·</span>vibe</div>
+    <div class="tag">TRAVEL PERSONALITY GAME</div>
+  </header>
+
+  <main>
+    <section id="start" class="screen active">
+      <div class="card start">
+        <div class="eyebrow">BEFORE WE GO</div>
+        <h1>우리는,<br>어떤 여행자일까?</h1>
+        <p>여행 가기 전에<br>우리의 여행 바이브를 가볍게 알아보자.</p>
+        <div class="pills">
+          <span class="pill">약 2분</span><span class="pill">12 questions</span><span class="pill">6 vibes</span>
+        </div>
+        <button class="primary" id="startBtn">내 여행 바이브 알아보기 →</button>
+        <div class="small-note">정답은 없어요. 그냥 재미로 해보세요.</div>
+      </div>
+    </section>
+
+    <section id="quiz" class="screen">
+      <div class="progress-wrap">
+        <div class="progress-top"><span id="progressText">QUESTION 1 / 12</span><span id="progressPct">8%</span></div>
+        <div class="progress"><i id="progressBar"></i></div>
+      </div>
+      <div class="card question-card">
+        <div class="q-kicker" id="qKicker">Q. 01</div>
+        <div class="question" id="question"></div>
+        <div class="answers" id="answers"></div>
+      </div>
+    </section>
+
+    <section id="result" class="screen">
+      <div class="card result-hero">
+        <div class="eyebrow">YOUR TRIP VIBE</div>
+        <div class="emoji" id="resultEmoji">🧭</div>
+        <h2 id="resultTitle">계획형 탐험가</h2>
+        <p id="resultDesc"></p>
+      </div>
+      <div class="card result-body">
+        <div class="section-title">MY TRIP VIBE</div>
+        <div class="scores" id="scores"></div>
+        <div class="tip">
+          <strong>✦ 같이 여행할 때 참고하면 좋은 점</strong>
+          <p id="tipText"></p>
+        </div>
+        <div class="actions">
+          <button class="secondary share" id="shareBtn">🔗 결과 링크 복사</button>
+          <button class="secondary" id="restartBtn">다시 하기</button>
+        </div>
+        <div class="copied" id="copied"></div>
+      </div>
+      <div class="footer">trip·vibe — 친구들과 더 재밌게 여행하기 위한 작은 게임</div>
+    </section>
+  </main>
+</div>
+
+<script>
+const questions = [
+  {axis:"explore", q:"여행지에 도착했다. 첫날이라면?", a:[["📍 대표 명소부터!","여기까지 왔는데, 유명한 곳부터 직접 봐야지."],["☕ 동네부터 천천히","지도 내려놓고 주변 분위기부터 느껴보고 싶다."]]},
+  {axis:"plan", q:"여행 일정을 짠다면?", a:[["🗓️ 시간까지 꽤 자세하게","어디서 뭘 할지 정해두면 마음이 편하다."],["🌿 큰 틀만 정해두기","꼭 할 것만 정하고 나머지는 그날 정하고 싶다."]]},
+  {axis:"pace", q:"하루에 볼 수 있는 곳이 4곳이라면?", a:[["🏃 다 가보자!","언제 또 올지 모르는데 최대한 많이 보고 싶다."],["🚶 두 곳만 제대로","이것저것 보기보다 여유 있게 즐기는 게 좋다."]]},
+
+  {axis:"comfort", q:"하루 종일 돌아다니다 숙소에 들어왔다. 제일 먼저 드는 생각은?", a:[["🛏️ 아, 여기 진짜 편하다","푹 쉬고 잘 수 있는 숙소가 여행의 만족도를 꽤 좌우한다."],["🎒 잠만 자면 됐지","숙소보다는 밖에서 뭘 더 해봤는지가 중요하다."]]},
+  {axis:"budget", q:"기차를 타야 하는데 두 가지 방법이 있다면?", a:[["🚄 조금 더 내고 편하게","시간이랑 편안함을 살 수 있다면 조금 더 내도 괜찮다."],["💸 조금 불편해도 아끼기","아낀 돈으로 맛있는 거나 다른 경험을 하고 싶다."]]},
+  {axis:"food", q:"점심시간, 처음 온 동네에서 뭘 먹을까?", a:[["🥢 여기서만 먹을 수 있는 걸로","그 지역에서만 맛볼 수 있는 음식이 더 궁금하다."],["⭐ 유명한 맛집으로 가자","조금 찾아가더라도 검증된 맛집을 먹어보고 싶다."]]},
+
+  {axis:"explore", q:"걷다가 골목 하나가 눈에 들어왔다. 그런데 관광객은 거의 없다.", a:[["📸 그래도 유명한 곳부터","처음 온 곳이면 대표적인 장소를 놓치고 싶지 않다."],["🗺️ 이런 데가 더 재밌지","사람들이 잘 모르는 곳을 발견하는 게 여행의 재미다."]]},
+  {axis:"plan", q:"내일 일정이 비어 있다. 어떻게 할까?", a:[["🔎 오늘 밤에 찾아두자","갈 만한 곳 몇 군데와 이동 방법 정도는 미리 알아둔다."],["🎈 내일 아침에 정하지 뭐","날씨나 기분 보고 그때 골라도 충분하다."]]},
+  {axis:"pace", q:"예상보다 시간이 2시간 정도 남았다면?", a:[["☕ 카페나 산책하면서 쉬자","예상치 못하게 생긴 여유도 여행의 일부라고 생각한다."],["🚶 하나 더 보러 가자","이왕 생긴 시간이니 근처에 하나라도 더 보고 싶다."]]},
+
+  {axis:"comfort", q:"숙소를 고르는데 비슷한 위치에 가격 차이가 꽤 난다.", a:[["✨ 조금 더 내고 편한 곳","여행에서 돌아왔을 때 제대로 쉬는 것도 중요하다."],["👌 적당한 곳이면 충분","숙소에 쓸 돈을 다른 여행 경험에 보태고 싶다."]]},
+  {axis:"budget", q:"여행 마지막 날, 예산이 조금 남았다면?", a:[["🍽️ 남은 돈으로 편하게 즐기자","마지막까지 시간과 편안함에 돈을 쓰는 편이다."],["🧾 남겨두거나 아껴 쓰자","굳이 다 쓰지 않고 다음 여행을 위해 남겨두고 싶다."]]},
+  {axis:"food", q:"유명 맛집 대기줄이 40분이다. 어떻게 할까?", a:[["🌿 근처 다른 곳 가보자","줄 서는 것보다 주변에서 새로운 곳을 찾는 게 더 재밌다."],["🍜 그래도 기다리자","여기까지 왔는데 유명한 곳은 한 번 먹어보고 싶다."]]}
+];
+
+const axisInfo = {
+ plan:{name:"계획", low:"즉흥", high:"계획"},
+ comfort:{name:"숙소", low:"가성비", high:"편안함"},
+ food:{name:"미식", low:"현지식", high:"맛집"},
+ pace:{name:"페이스", low:"여유", high:"알차게"},
+ budget:{name:"소비", low:"가성비", high:"편의성"},
+ explore:{name:"탐방", low:"로컬", high:"명소"}
+};
+
+const types = [
+ {id:"planner", emoji:"🧭", title:"계획형 탐험가",
+  desc:"보고 싶은 것도 많고, 그걸 놓치지 않도록 미리 움직이는 타입. 준비가 잘 되어 있을수록 여행에서 더 자유로워지는 편이에요.",
+  when:s=>s.plan>=50&&s.explore>=50},
+ {id:"conqueror", emoji:"🚀", title:"알찬 정복자",
+  desc:"여행까지 왔는데 최대한 많이 보고 싶어! 하루가 꽉 차 있을수록 뿌듯한 타입. 체력만 따라준다면 어디든 달려갑니다.",
+  when:s=>s.pace>=50&&s.plan>=50},
+ {id:"slow", emoji:"🌿", title:"느긋한 여행자",
+  desc:"여행의 핵심은 속도가 아니라 분위기. 한 장소에 오래 머물고, 맛있는 걸 먹고, 좋은 풍경을 천천히 즐기는 타입이에요.",
+  when:s=>s.comfort>=50&&s.pace<50},
+ {id:"spontaneous", emoji:"🎈", title:"즉흥 탐험가",
+  desc:"계획보다 현장의 재미를 믿는 타입. 예상치 못한 일이 생겨도 오히려 여행다운 순간이라고 생각하는 편이에요.",
+  when:s=>s.plan<50&&s.explore>=50},
+ {id:"balanced", emoji:"🌍", title:"밸런스 여행자",
+  desc:"계획도 필요하고 여유도 필요해요. 상황에 따라 적당히 조절하면서 모두가 편하게 즐기는 여행을 선호하는 타입입니다.",
+  when:()=>true}
+];
+
+let idx=0, answers=[], scores={};
+
+function show(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function renderQuestion(){
+ const item=questions[idx];
+ document.getElementById("qKicker").textContent=`Q. ${String(idx+1).padStart(2,"0")}`;
+ document.getElementById("question").textContent=item.q;
+ document.getElementById("progressText").textContent=`QUESTION ${idx+1} / ${questions.length}`;
+ const pct=Math.round(((idx+1)/questions.length)*100);
+ document.getElementById("progressPct").textContent=`${pct}%`;
+ document.getElementById("progressBar").style.width=pct+"%";
+ const wrap=document.getElementById("answers"); wrap.innerHTML="";
+ item.a.forEach((choice,i)=>{
+   const b=document.createElement("button"); b.className="answer";
+   b.innerHTML=`<span class="num">${i===0?"A":"B"}</span><span><strong>${choice[0]}</strong><small>${choice[1]}</small></span>`;
+   b.onclick=()=>select(i);
+   wrap.appendChild(b);
+ });
+}
+function select(i){
+ answers[idx]=i;
+ idx++;
+ if(idx<questions.length){renderQuestion()} else {renderResult()}
+}
+function calc(){
+ scores={plan:0,comfort:0,food:0,pace:0,budget:0,explore:0};
+ questions.forEach((q,i)=>{
+   const v=answers[i]===0?1:-1;
+   scores[q.axis]+=v;
+ });
+}
+function pct(axis){
+ const max=questions.filter(q=>q.axis===axis).length;
+ return Math.round(50+(scores[axis]/max)*50);
+}
+function getType(){
+ const s=Object.fromEntries(Object.keys(axisInfo).map(k=>[k,pct(k)]));
+ return types.find(t=>t.when(s));
+}
+function tipText(s){
+ const tips=[];
+ if(s.plan>=62) tips.push("일정은 미리 큰 틀을 맞춰두면 마음이 편해요.");
+ else if(s.plan<=38) tips.push("모든 일정을 꽉 채우기보다 현장에서 바꿀 여지를 남겨두세요.");
+ if(s.pace>=62) tips.push("하루에 몇 곳을 볼지 여행 전에 같이 합의해두면 좋아요.");
+ else if(s.pace<=38) tips.push("중간중간 쉬는 시간을 일부러 넣어두면 만족도가 높을 거예요.");
+ if(s.comfort>=62) tips.push("숙소에 대한 기대치를 먼저 맞춰두는 것도 중요해요.");
+ else if(s.comfort<=38) tips.push("숙소보다는 밖에서 보내는 시간에 예산을 더 쓰는 쪽이 잘 맞아요.");
+ if(!tips.length) tips.push("서로의 여행 속도를 존중하면서 그날그날 조율하면 잘 맞을 가능성이 높아요.");
+ return tips.slice(0,2).join(" ");
+}
+function breakSentences(text){
+ return text.replace(/([^.!?요다까죠요])([.!?]|요\.|다\.|까\.|죠\.)/g, "$1$2<br>");
+}
+function renderResult(){
+ calc();
+ const s=Object.fromEntries(Object.keys(axisInfo).map(k=>[k,pct(k)]));
+ const t=getType();
+ document.getElementById("resultEmoji").textContent=t.emoji;
+ document.getElementById("resultTitle").textContent=t.title;
+ document.getElementById("resultDesc").innerHTML=breakSentences(t.desc);
+ document.getElementById("tipText").innerHTML=breakSentences(tipText(s));
+ const wrap=document.getElementById("scores"); wrap.innerHTML="";
+ Object.entries(axisInfo).forEach(([key,info])=>{
+   const val=s[key];
+   const row=document.createElement("div"); row.className="vibe-row";
+   const side = val >= 50 ? info.high : info.low;
+   const distance = Math.round(Math.abs(val-50)*2);
+   row.innerHTML=`
+     <div class="vibe-labels">
+       <span>${info.low}</span>
+       <span class="vibe-name">${info.name}</span>
+       <span>${info.high}</span>
+     </div>
+     <div class="bipolar">
+       <span class="center-line"></span>
+       <i style="left:${val}%"></i>
+     </div>
+     <div class="vibe-reading"><b>${side}</b><span>${distance === 0 ? "딱 중간이에요" : `${distance}% 성향이에요`}</span></div>`;
+   wrap.appendChild(row);
+ });
+ show("result");
+}
+function encodeResult(){
+ return btoa(String.fromCharCode(...answers.map(x=>48+x))).replaceAll("=","");
+}
+function decodeResult(code){
+ try{
+   const raw=atob(code+"==");
+   return [...raw].map(c=>Number(c)-48).filter(n=>n===0||n===1);
+ }catch(e){return null}
+}
+function makeShareUrl(){
+ const u=new URL(location.href);
+ u.hash="r="+encodeResult();
+ return u.toString();
+}
+async function shareResult(){
+ const url=makeShareUrl();
+ try{
+   await navigator.clipboard.writeText(url);
+   document.getElementById("copied").textContent="✓ 결과 링크가 복사됐어요. 카톡에 붙여넣어 보세요!";
+ }catch(e){
+   prompt("아래 링크를 복사해서 친구에게 보내세요.",url);
+ }
+}
+function start(){
+ idx=0;answers=[];show("quiz");renderQuestion();
+}
+document.getElementById("startBtn").onclick=start;
+document.getElementById("restartBtn").onclick=start;
+document.getElementById("shareBtn").onclick=shareResult;
+
+const hash=location.hash;
+if(hash.startsWith("#r=")){
+ const decoded=decodeResult(hash.slice(3));
+ if(decoded && decoded.length===questions.length){answers=decoded;renderResult();}
+}
+</script>
+</body>
+</html>
