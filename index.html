@@ -280,14 +280,16 @@ function encodeResult(){
 function decodeResult(code){
  try{
    const raw=atob(code+"==");
-   return [...raw].map(c=>Number(c)-48).filter(n=>n===0||n===1);
+   return [...raw].map(c=>Number(c)).filter(n=>n===0||n===1);
  }catch(e){return null}
 }
 function makeShareUrl(){
- const u=new URL(location.href);
- u.hash="";
+ const u=new URL(window.location.href);
+ // GitHub Pages에서도 결과값은 query string으로 공유합니다.
+ u.hash = "";
+ u.search = "";
  u.searchParams.set("result", encodeResult());
- return u.toString();
+ return u.href;
 }
 async function shareResult(){
  const url=makeShareUrl();
