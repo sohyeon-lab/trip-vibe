@@ -285,7 +285,8 @@ function decodeResult(code){
 }
 function makeShareUrl(){
  const u=new URL(location.href);
- u.hash="r="+encodeResult();
+ u.hash="";
+ u.searchParams.set("result", encodeResult());
  return u.toString();
 }
 async function shareResult(){
@@ -304,10 +305,17 @@ document.getElementById("startBtn").onclick=start;
 document.getElementById("restartBtn").onclick=start;
 document.getElementById("shareBtn").onclick=shareResult;
 
-const hash=location.hash;
-if(hash.startsWith("#r=")){
- const decoded=decodeResult(hash.slice(3));
+const params=new URLSearchParams(location.search);
+const sharedCode=params.get("result");
+if(sharedCode){
+ const decoded=decodeResult(sharedCode);
  if(decoded && decoded.length===questions.length){answers=decoded;renderResult();}
+} else {
+ const hash=location.hash;
+ if(hash.startsWith("#r=")){
+   const decoded=decodeResult(hash.slice(3));
+   if(decoded && decoded.length===questions.length){answers=decoded;renderResult();}
+ }
 }
 </script>
 </body>
