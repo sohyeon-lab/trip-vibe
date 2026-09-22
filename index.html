@@ -279,8 +279,14 @@ function encodeResult(){
 }
 function decodeResult(code){
  try{
-   const raw=atob(code+"==");
-   return [...raw].map(c=>Number(c)).filter(n=>n===0||n===1);
+   if(!code) return null;
+   // URL-safe Base64도 허용하고, 필요한 padding만 보충합니다.
+   const normalized=String(code).replace(/-/g,"+").replace(/_/g,"/");
+   const padded=normalized+"=".repeat((4-normalized.length%4)%4);
+   const raw=atob(padded);
+   // 각 답변은 ASCII 0/1 한 글자로 저장됩니다.
+   const result=[...raw].map(c=>c.charCodeAt(0)-48);
+   return result.every(n=>n===0||n===1) ? result : null;
  }catch(e){return null}
 }
 function makeShareUrl(){
@@ -307,16 +313,16 @@ document.getElementById("startBtn").onclick=start;
 document.getElementById("restartBtn").onclick=start;
 document.getElementById("shareBtn").onclick=shareResult;
 
-const params=new URLSearchParams(location.search);
-const sharedCode=params.get("result");
+// 공유 링크 복원: ?result=... 를 우선 처리하고, 기존 #r=... 링크도 호환합니다.
+const params=new URLSearchParams(window.location.search);
+const queryCode=params.get("result");
+const hashCode=window.location.hash.startsWith("#r=") ? window.location.hash.slice(3) : null;
+const sharedCode=queryCode || hashCode;
 if(sharedCode){
  const decoded=decodeResult(sharedCode);
- if(decoded && decoded.length===questions.length){answers=decoded;renderResult();}
-} else {
- const hash=location.hash;
- if(hash.startsWith("#r=")){
-   const decoded=decodeResult(hash.slice(3));
-   if(decoded && decoded.length===questions.length){answers=decoded;renderResult();}
+ if(decoded && decoded.length===questions.length){
+   answers=decoded;
+   renderResult();
  }
 }
 </script>
